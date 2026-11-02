@@ -122,7 +122,9 @@ def main():
     ]
 
     for fr_sentence, en_sentence in zip(fr_sentences, en_sentences):
-        translation = decode(model, fr_sentence, max_len=max_length, device=device)
+        translation = decode(
+            model, fr_sentence, max_len=max_length, device=device, mode="greedy"
+        )
         print(f"French: {fr_sentence}")
         print(f"Ground Truth English: {en_sentence}")
         print(f"Model Translation: {translation}")
