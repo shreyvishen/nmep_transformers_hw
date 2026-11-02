@@ -25,7 +25,13 @@ run = wandb.init(
 
 def decode(model, src_sentence, max_len=100, device="cpu"):
     model.eval()
-    src_tensor = tokenizer.encode(src_sentence).to(device)
+    src_tensor = torch.cat(
+        [
+            torch.tensor([tokenizer.bos_token_id]),
+            tokenizer.encode(src_sentence),
+            torch.tensor([tokenizer.eos_token_id]),
+        ]
+    ).to(device)
 
     tgt_tokens = [tokenizer.bos_token_id]
 
@@ -43,7 +49,7 @@ def decode(model, src_sentence, max_len=100, device="cpu"):
 
         tgt_tokens.append(next_token)
 
-    return tokenizer.decode(torch.tensor(tgt_tokens))
+    return tokenizer.decode(torch.tensor(tgt_tokens[1:]))
 
 
 def save_checkpoint(epoch: int, model, optimizer, scheduler, latest=True):
